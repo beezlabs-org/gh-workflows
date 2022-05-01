@@ -1,0 +1,42 @@
+name: Docker Build Push
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      push:
+        required: false
+        default: true
+        type: boolean
+    secrets:
+      acr_client_id:
+        required: true
+      acr_password:
+        required: true
+      auth_token:
+        required: false
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          registry: beezlabs.azurecr.io
+          username: ${{ secrets.acr_client_id }}
+          password: ${{ secrets.acr_password }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2
+        with:
+          pull: true
+          push: ${{ inputs.push }}
+          tags: beezlabs.azurecr.io/containers/beezlabs/${{ github.event.repository.name }}:${{ inputs.version }}
+          secrets: |
+            "NPM_TOKEN=//npm.pkg.github.com/:_authToken=${{ secrets.auth_token }}
+            @beezlabs-org:registry=https://npm.pkg.github.com/"
