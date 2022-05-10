@@ -10,11 +10,11 @@ on:
         default: true
         type: boolean
     secrets:
-      acr_client_id:
+      acr-client-id:
         required: true
-      acr_password:
+      acr-password:
         required: true
-      auth_token:
+      auth-token:
         required: false
 
 jobs:
@@ -28,8 +28,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: beezlabs.azurecr.io
-          username: ${{ secrets.acr_client_id }}
-          password: ${{ secrets.acr_password }}
+          username: ${{ secrets.acr-client-id }}
+          password: ${{ secrets.acr-password }}
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
@@ -38,6 +38,6 @@ jobs:
           push: ${{ inputs.push }}
           tags: beezlabs.azurecr.io/containers/beezlabs/${{ github.event.repository.name }}:${{ inputs.version }}
           secrets: |
-            "NPM_TOKEN=//npm.pkg.github.com/:_authToken=${{ secrets.auth_token }}
+            "NPM_TOKEN=//npm.pkg.github.com/:_authToken=${{ secrets.auth-token }}
             @beezlabs-org:registry=https://npm.pkg.github.com/
-            GO_PRIVATE_SECRET=${{ secrets.auth_token }}"
+            GO_PRIVATE_SECRET=${{ secrets.auth-token }}"
