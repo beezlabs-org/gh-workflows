@@ -63,6 +63,7 @@ jobs:
 
       - name: Jib Build
         env:
+          IMAGE_TAG: beezlabs.azurecr.io/containers/beezlabs/${{ github.event.repository.name }}:${{ inputs.version }}
           ACR_CLIENT_ID: ${{ secrets.acr-client-id }}
           ACR_PASSWORD: ${{ secrets.acr-password }}
           GPR_USERNAME: beezlabs
