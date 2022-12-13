@@ -26,6 +26,10 @@ jobs:
     if: ${{ !inputs.jib }}
     runs-on: ubuntu-latest
     steps:
+      - name: Generate DateTime
+        run: |
+          echo "NOW=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -42,11 +46,15 @@ jobs:
           pull: true
           push: ${{ inputs.push }}
           tags: beezlabs.azurecr.io/containers/beezlabs/${{ github.event.repository.name }}:${{ inputs.version }}
+          labels: |
+            org.opencontainers.image.created=${{ env.NOW }}
+            org.opencontainers.image.version=${{ inputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
           secrets: |
             "NPM_TOKEN=//npm.pkg.github.com/:_authToken=${{ secrets.auth-token }}
             @beezlabs-org:registry=https://npm.pkg.github.com/
             GO_PRIVATE_SECRET=${{ secrets.auth-token }}"
-  
+
   jib-build:
     if: ${{ inputs.jib }}
     runs-on: ubuntu-latest
@@ -59,7 +67,7 @@ jobs:
       - name: Setup Java 11
         uses: actions/setup-java@v1
         with:
-          java-version: '11'
+          java-version: "11"
 
       - name: Jib Build
         env:
