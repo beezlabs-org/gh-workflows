@@ -58,8 +58,8 @@ jobs:
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           secrets: |
             "NPM_TOKEN=//npm.pkg.github.com/:_authToken=${{ secrets.auth-token }}
-            @beezlabs-org:registry=https://npm.pkg.github.com/
-            GO_PRIVATE_SECRET=${{ secrets.auth-token }}"
+            @beezlabs-org:registry=https://npm.pkg.github.com/"
+            "GO_PRIVATE_SECRET=${{ secrets.auth-token }}"
 
   jib-build:
     if: ${{ inputs.jib }}
