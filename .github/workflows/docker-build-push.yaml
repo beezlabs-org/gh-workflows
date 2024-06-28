@@ -9,6 +9,10 @@ on:
         required: false
         default: true
         type: boolean
+      working-dir:
+        required: false
+        default: '.'
+        type: string
       jib:
         required: false
         default: false
@@ -43,6 +47,9 @@ jobs:
           registry: beezlabs.azurecr.io
           username: ${{ secrets.acr-client-id }}
           password: ${{ secrets.acr-password }}
+      
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
@@ -50,6 +57,7 @@ jobs:
           pull: true
           push: ${{ inputs.push }}
           tags: beezlabs.azurecr.io/containers/beezlabs/${{ github.event.repository.name }}:${{ inputs.version }}
+          context: ${{ inputs.working-dir }}
           labels: |
             org.opencontainers.image.created=${{ env.NOW }}
             org.opencontainers.image.version=${{ inputs.version }}
